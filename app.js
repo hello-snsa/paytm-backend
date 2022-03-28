@@ -9,9 +9,7 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use('/api', paymentRoute);
 
-// const port = 8000
 const port = process.env.PORT || 8000
-
 
 app.listen(port, () => {
     console.log(`APP IS RUNNING AT ${port}`)

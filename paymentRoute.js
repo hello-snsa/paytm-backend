@@ -1,3 +1,4 @@
+
 require('dotenv').config()
 
 const formidable = require('formidable')
@@ -9,17 +10,35 @@ const firebase = require('firebase')
 const PaytmChecksum = require('./PaytmChecksum')
 const db = require('./firebase')
 
+
+
+
 router.post('/callback', (req, res) => {
 
     const form = new formidable.IncomingForm();
 
     form.parse(req, (err, fields, file) => {
 
+
+
+
+
+
+
+
+
         paytmChecksum = fields.CHECKSUMHASH;
         delete fields.CHECKSUMHASH;
 
         var isVerifySignature = PaytmChecksum.verifySignature(fields, process.env.PAYTM_MERCHANT_KEY, paytmChecksum);
         if (isVerifySignature) {
+
+
+
+
+
+
+
 
             var paytmParams = {};
             paytmParams["MID"] = fields.MID;
@@ -62,12 +81,13 @@ router.post('/callback', (req, res) => {
                         let result = JSON.parse(response)
                         if (result.STATUS === 'TXN_SUCCESS') {
                             //store in db
-                            db.collection('payments').doc('mPDd5z0pNiInbSIIotfj').update({ paymentHistory: firebase.firestore.FieldValue.arrayUnion(result) })
+                            db.collection('paytm').doc('VHOCqNQdTN20udyR8PjZ').update({ paymentHistory: firebase.firestore.FieldValue.arrayUnion(result) })
                                 .then(() => console.log("Update success"))
                                 .catch(() => console.log("Unable to update"))
                         }
 
                         res.redirect(`https://toprd.netlify.app/status/${result.ORDERID}`)
+
 
                     });
                 });
@@ -75,9 +95,24 @@ router.post('/callback', (req, res) => {
                 post_req.write(post_data);
                 post_req.end();
             });
+
+
+
+
+
+
+
+
+
+
         } else {
             console.log("Checksum Mismatched");
         }
+
+
+
+
+
 
     })
 
@@ -85,11 +120,13 @@ router.post('/callback', (req, res) => {
 
 router.post('/payment', (req, res) => {
 
+
     const { amount, email } = req.body;
 
     /* import checksum generation utility */
     const totalAmount = JSON.stringify(amount);
     var params = {};
+
     /* initialize an array */
     params['MID'] = process.env.PAYTM_MID,
         params['WEBSITE'] = process.env.PAYTM_WEBSITE,
